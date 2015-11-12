@@ -1,0 +1,4 @@
+# string_view for C++03 C++11 C++14 backport
+
+Licensed under Boost license
+
