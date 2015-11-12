@@ -137,13 +137,14 @@ namespace std_backport
 
 		CONSTEXPR const_reference operator[](size_type pos) const 
 		{
+#if __cplusplus >= 201402L
 			assert(pos < size());
+#endif
 			return *(start_ + pos); 
 		}
 		CONSTEXPR const_reference at(size_type pos) const
 		{
-			if (pos >= size()) { throw std::out_of_range("basic_string_view at out of range"); }
-			return *(start_ + pos);
+			return pos >= size()? throw std::out_of_range("basic_string_view at out of range"):*(start_ + pos);
 		}
 		CONSTEXPR const_reference front() const { return *start_; }
 		CONSTEXPR const_reference back() const { return *end_; }
@@ -153,17 +154,17 @@ namespace std_backport
 		CONSTEXPR size_type length() const { return std::distance(begin(), end()); }
 		CONSTEXPR size_type max_size() const { return std::numeric_limits<size_type>::max()/ 2; }
 		CONSTEXPR bool empty() const { return size() == 0; }
-		CONSTEXPR void remove_prefix(size_type n) 
+		CONSTEXPR_CPP14 void remove_prefix(size_type n) 
 		{
 			assert(n < size());
 			start_ += n;
 		}
-		CONSTEXPR void remove_suffix(size_type n) 
+		CONSTEXPR_CPP14 void remove_suffix(size_type n) 
 		{
 			assert(n < size());
 			end_ -= n; 
 		}
-		CONSTEXPR void swap(basic_string_view& v)
+		CONSTEXPR_CPP14 void swap(basic_string_view& v)
 		{
 			std::swap(start_,v.start_);
 			std::swap(end_,v.end_);
@@ -205,14 +206,12 @@ namespace std_backport
 		CONSTEXPR basic_string_view
 			substr(size_type pos = 0, size_type count = npos) const
 		{
-			if (pos >= size()) { throw std::out_of_range("basic_string_view::substr out of range"); }
-			 if (count >= size() - pos) { count = size() - pos; }
-			 return basic_string_view(data() + pos , count);
+			return pos >= size() ? throw std::out_of_range("basic_string_view::substr out of range"): 
+			  (count > size() - pos) ? substr(pos,size() - pos) : basic_string_view(data() + pos , count);
 		}
 		CONSTEXPR_CPP14 int compare(basic_string_view v) const
 		{
 			int r = traits_type::compare(data(), v.data(), std::min(size(), v.size()));
-
 			return r==0? size() - v.size():r;
 		}
 		CONSTEXPR_CPP14 int compare(size_type pos1, size_type count1,
@@ -220,12 +219,12 @@ namespace std_backport
 		CONSTEXPR_CPP14 int compare(size_type pos1, size_type count1, basic_string_view v,
 			size_type pos2, size_type count2) const{return substr(pos1, count1).compare(v.substr(pos2, count2));}
 		CONSTEXPR_CPP14 int compare(const CharT* s) const { return compare(basic_string_view(s)); }
-		CONSTEXPR_CPP14 int compare(size_type pos1, size_type count1,
-			const CharT* s) const {
+		CONSTEXPR_CPP14 int compare(size_type pos1, size_type count1,const CharT* s) const 
+		{
 			return substr(pos1, count1).compare(basic_string_view(s));
 		}
-		CONSTEXPR_CPP14 int compare(size_type pos1, size_type count1,
-			const CharT* s, size_type count2) const {
+		CONSTEXPR_CPP14 int compare(size_type pos1, size_type count1,const CharT* s, size_type count2) const 
+		{
 			return substr(pos1, count1).compare(basic_string_view(s, count2));
 		}
 
