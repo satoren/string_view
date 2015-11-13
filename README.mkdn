@@ -1,4 +1,14 @@
-# string_view for C++03 C++11 C++14 backport
+# string_view for C++03 C++11 C++14
 
 Licensed under Boost license
+
+
+## Version
+1.0.0 [![Build Status](https://travis-ci.org/satoren/string_view.svg?branch=master)](https://travis-ci.org/satoren/string_view.svg)
+
+
+## Introduction
+http://en.cppreference.com/w/cpp/experimental/basic_string_view
+
+
 
