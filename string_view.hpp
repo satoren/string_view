@@ -103,16 +103,16 @@ namespace std_backport
     typedef std::size_t size_type;
     typedef std::ptrdiff_t difference_type;
 
-#ifdef _HAS_CONSTEXPR
+#if defined(_HAS_CONSTEXPR) ||  __cplusplus >= 201103L
     static constexpr size_type npos = size_type(-1);
 #else
     static const size_type npos = size_type(-1);
 #endif
 
-    CONSTEXPR basic_string_view(){}
+    CONSTEXPR basic_string_view():start_(0),end_(0){}
     CONSTEXPR basic_string_view(const basic_string_view& other):start_(other.start_),end_(other.end_){}
     template<class Allocator>
-    basic_string_view(const std::basic_string<CharT, Traits, Allocator>& str) {
+    basic_string_view(const std::basic_string<CharT, Traits, Allocator>& str) :start_(0),end_(0){
       if (!str.empty())
       {
         start_ = &str[0];
