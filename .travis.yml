@@ -5,4 +5,5 @@ compiler:
   - gcc
 
 script:
-  - make test
+  - make test_03
+  - make test_11
