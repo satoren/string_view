@@ -283,12 +283,12 @@ namespace std_backport
     CONSTEXPR size_type find_last_not_of(const CharT* s, size_type pos, size_type count) const { return find_last_not_of(basic_string_view(s, count), pos); }
     CONSTEXPR size_type find_last_not_of(const CharT* s, size_type pos = npos) const { return find_last_not_of(basic_string_view(s), pos); }
 
-    CONSTEXPR_CPP14 bool operator==(const basic_string_view& rhs) { return compare(rhs) == 0; }
-    CONSTEXPR_CPP14 bool operator!=(const basic_string_view& rhs) { return compare(rhs) != 0; }
-    CONSTEXPR_CPP14 bool operator<(const basic_string_view& rhs) { return compare(rhs) < 0; }
-    CONSTEXPR_CPP14 bool operator>(const basic_string_view& rhs) { return rhs < *this; }
-    CONSTEXPR_CPP14 bool operator<=(const basic_string_view& rhs) { return !(*this > rhs); }
-    CONSTEXPR_CPP14 bool operator>=(const basic_string_view& rhs) { return !(*this < rhs); }
+    CONSTEXPR_CPP14 bool operator==(const basic_string_view& rhs) const { return compare(rhs) == 0; }
+    CONSTEXPR_CPP14 bool operator!=(const basic_string_view& rhs) const { return compare(rhs) != 0; }
+    CONSTEXPR_CPP14 bool operator<(const basic_string_view& rhs) const { return compare(rhs) < 0; }
+    CONSTEXPR_CPP14 bool operator>(const basic_string_view& rhs) const { return rhs < *this; }
+    CONSTEXPR_CPP14 bool operator<=(const basic_string_view& rhs) const { return !(*this > rhs); }
+    CONSTEXPR_CPP14 bool operator>=(const basic_string_view& rhs) const { return !(*this < rhs); }
   private:
     CONSTEXPR basic_string_view(const iterator& s, const iterator& e) : start_(s), end_(e) {}
     iterator start_;
