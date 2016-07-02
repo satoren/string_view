@@ -188,6 +188,12 @@ namespace std_backport
     {
       return std::basic_string<CharT, Traits>(begin(),end());
     }
+	template<class Allocator >
+	std::basic_string<CharT, Traits, Allocator>
+		to_string(const Allocator& a) const
+	{
+		return std::basic_string<CharT, Traits, Allocator>(begin(), end());
+	}
     template<class Allocator>
     operator std::basic_string<CharT, Traits, Allocator>() const
     {
@@ -199,10 +205,12 @@ namespace std_backport
       size_type pos = 0) const
     {
       if (pos >= size()) { throw std::out_of_range("basic_string_view::copy out of range"); }
-      for (int i = 0; i < size();++i)
+	  size_t copied = 0;
+      for (; copied < size();++copied)
       {
-        dest[i] = operator[](i + pos);
+        dest[copied] = operator[](copied + pos);
       }
+	  return copied;
     }
     CONSTEXPR basic_string_view
       substr(size_type pos = 0, size_type count = npos) const
