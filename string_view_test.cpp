@@ -2,6 +2,87 @@
 #include "string_view.hpp"
 #include <cassert>
 
+
+void compare_with_std_string_test()
+{
+	std::string s = "This is a string";
+	std_backport::string_view v(s);
+
+
+	assert(v.substr(0) == s.substr(0));
+	assert(v.substr(0, 5) == s.substr(0, 5));
+	assert(v.substr(1, 5) == s.substr(1, 5));
+	assert(v.substr(4, 5) == s.substr(4, 5));
+	assert(v.substr(0, 322) == s.substr(0, 322));
+
+
+#define FIND_TEST_FUNCTION(FNAME)\
+assert(s.FNAME("is") == v.FNAME("is"));\
+assert(s.FNAME("is", 4) == v.FNAME("is", 4));\
+assert(s.FNAME("s", 4) == v.FNAME("s", 4));\
+assert(s.FNAME("s") == v.FNAME("s"));\
+assert(s.FNAME('q') == v.FNAME('q'));\
+assert(s.FNAME('q') == v.FNAME('q'));\
+assert(s.FNAME('q', s.size()) == v.FNAME('q', v.size()));\
+assert(s.FNAME('q', s.size() + 1) == v.FNAME('q', v.size() + 1));\
+
+	FIND_TEST_FUNCTION(find);
+
+
+	FIND_TEST_FUNCTION(rfind);
+	FIND_TEST_FUNCTION(find_first_of);
+	FIND_TEST_FUNCTION(find_last_of);
+	FIND_TEST_FUNCTION(find_first_not_of);
+	FIND_TEST_FUNCTION(find_last_not_of);
+
+#undef FIND_TEST_FUNCTION
+	
+	assert(v.find('q') == std_backport::string_view::npos);	
+	assert(v.rfind('q') == std_backport::string_view::npos);
+	assert(v.rfind("is", 4) == 2);
+	assert(v.rfind("s") == 10);
+
+	assert(v.find_first_of('q') == std_backport::string_view::npos);
+	assert(v.find_last_of('q') == std_backport::string_view::npos);
+	assert(v.find_first_not_of('q') == 0);
+	assert(v.find_last_not_of('q') == v.size() - 1);
+	
+	assert((v == s));
+	assert((v <= s));
+	assert((v >= s));
+	assert(!(v != s));
+	assert(!(v < s));
+	assert(!(v > s));
+
+
+	assert(!(v == ""));
+	assert(!(v <= ""));
+	assert((v >= ""));
+	assert((v != ""));
+	assert(!(v < ""));
+	assert((v > ""));
+
+	assert(!(v == "a"));
+	assert((v <= "a"));
+	assert(!(v >= "a"));
+	assert((v != "a"));
+	assert((v < "a"));
+	assert(!(v > "a"));
+
+	bool catch_except = false;
+	try
+	{
+		v.substr(v.size(), 1);
+	}
+	catch (std::exception&)
+	{
+		catch_except = true;
+	}
+	assert(catch_except);
+}
+
+
+
 int main()
 {
 	std_backport::string_view view("test");
@@ -20,128 +101,18 @@ int main()
 
 		assert(view2.substr(1, 3) == "est");
 	}
+	compare_with_std_string_test();
 
+	std::string empty_str;
+	std_backport::string_view empty_view(empty_str);
+	assert(empty_view == empty_str);
 
-	{
-		std::string s("This is a string");
-		std_backport::string_view v(s);
-
-		assert(s.find("is") == v.find("is"));
-		assert(s.find("is", 4) == v.find("is", 4));
-		assert(s.find("s", 4) == v.find("s", 4));
-		assert(s.find("s") == v.find("s"));
-		assert(s.find('q') == v.find('q'));
-		assert(s.find('q') == v.find('q'));
-
-		assert(v.find('q') == std_backport::string_view::npos);
-	}
-
-	{
-		std::string s("This is a string");
-		std_backport::string_view v(s);
-
-
-		assert(s.rfind("is") == v.rfind("is"));
-		assert(s.rfind("is", 4) == v.rfind("is", 4));
-		assert(s.rfind("s", 4) == v.rfind("s", 4));
-		assert(s.rfind("s") == v.rfind("s"));
-		assert(s.rfind('q') == v.rfind('q'));
-		assert(s.rfind('q') == v.rfind('q'));
-
-		assert(s.rfind("is") == 5);
-
-		assert(s.rfind("is", 4) == 2);
-
-		assert(s.rfind("s") == 10);
-
-		assert(s.rfind('q') == std_backport::string_view::npos);
-	}
-
-	
-	{
-		std::string s("This is a string");
-		std_backport::string_view v(s);
-
-		assert(s.find_first_of("is") == v.find_first_of("is"));
-		assert(s.find_first_of("is", 4) == v.find_first_of("is", 4));
-		assert(s.find_first_of("s", 4) == v.find_first_of("s", 4));
-		assert(s.find_first_of("s") == v.find_first_of("s"));
-		assert(s.find_first_of('q') == v.find_first_of('q'));
-		assert(s.find_first_of('q') == v.find_first_of('q'));
-
-		assert(v.find_first_of('q') == std_backport::string_view::npos);
-	}
-	{
-		std::string s("This is a string");
-		std_backport::string_view v(s);
-
-		assert(s.find_last_of("is") == v.find_last_of("is"));
-		assert(s.find_last_of("is", 4) == v.find_last_of("is", 4));
-		assert(s.find_last_of("s", 4) == v.find_last_of("s", 4));
-		assert(s.find_last_of("s") == v.find_last_of("s"));
-		assert(s.find_last_of('q') == v.find_last_of('q'));
-		assert(s.find_last_of('q') == v.find_last_of('q'));
-
-		assert(v.find_last_of('q') == std_backport::string_view::npos);
-	}
-
-
-	{
-		std::string s("This is a string");
-		std_backport::string_view v(s);
-
-		assert(s.find_last_of("is") == v.find_last_of("is"));
-		assert(s.find_last_of("is", 4) == v.find_last_of("is", 4));
-		assert(s.find_last_of("s", 4) == v.find_last_of("s", 4));
-		assert(s.find_last_of("s") == v.find_last_of("s"));
-		assert(s.find_last_of('q') == v.find_last_of('q'));
-		assert(s.find_last_of('q') == v.find_last_of('q'));
-
-		assert(v.find_last_of('q') == std_backport::string_view::npos);
-	}
-
-	{
-		std::string s("This is a string");
-		std_backport::string_view v(s);
-
-		assert(s.find_first_not_of("is") == v.find_first_not_of("is"));
-		assert(s.find_first_not_of("is", 4) == v.find_first_not_of("is", 4));
-		assert(s.find_first_not_of("s", 4) == v.find_first_not_of("s", 4));
-		assert(s.find_first_not_of("s") == v.find_first_not_of("s"));
-		assert(s.find_first_not_of('q') == v.find_first_not_of('q'));
-		assert(s.find_first_not_of('q') == v.find_first_not_of('q'));
-
-		assert(v.find_first_not_of('q') == 0);
-	}
-
-	{
-		std::string s("This is a string");
-		std_backport::string_view v(s);
-		assert(s.find_last_not_of("is") == v.find_last_not_of("is"));
-		assert(s.find_last_not_of("is", 4) == v.find_last_not_of("is", 4));
-		assert(s.find_last_not_of("s", 4) == v.find_last_not_of("s", 4));
-		assert(s.find_last_not_of("s") == v.find_last_not_of("s"));
-		assert(s.find_last_not_of('q') == v.find_last_not_of('q'));
-		assert(s.find_last_not_of('q') == v.find_last_not_of('q'));
-
-		assert(v.find_last_not_of('q') == v.size()-1);
-	}
-
-
-	/*
-	{
-    // the test string
-    std_backport::string_view hello("Hello World!");
- 
-    // strings and chars to search for
-    std::string search_str = std::string("o");
-    const char* search_cstr = "Good Bye!";
-    assert(hello.find_first_of(search_str) == 4);
-    assert(hello.find_first_of(search_str, 5) == 7);
-    assert(hello.find_first_of(search_cstr) == 1);
-    assert(hello.find_first_of(search_cstr, 0, 4) == 4);
-    assert(hello.find_first_of('x') == std::string_view::npos);
-	}*/
-    return 0;
+	std_backport::string_view editview("test");
+	editview.remove_prefix(2);
+	assert(editview == "st");
+	editview = "test";
+	editview.remove_suffix(2);
+	assert(editview == "te");
+	return 0;
 }
 
