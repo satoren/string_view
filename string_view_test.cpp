@@ -1,6 +1,7 @@
 #include <iostream>
 #include "string_view.hpp"
 #include <cassert>
+#include <cstring>
 
 
 void compare_with_std_string_test()
@@ -46,7 +47,28 @@ assert(s.FNAME('q', s.size() + 1) == v.FNAME('q', v.size() + 1));\
 	assert(v.find_last_of('q') == std_backport::string_view::npos);
 	assert(v.find_first_not_of('q') == 0);
 	assert(v.find_last_not_of('q') == v.size() - 1);
-	
+
+	{
+		std_backport::string_view view;
+		assert((view = "test") == std::string("test"));
+		assert((view = "") == std::string(""));
+		assert((view = "") == std::string());
+	}
+
+	{
+		std_backport::string_view view="test";
+		char buffer[5] = {};
+		;
+		assert(view.copy(buffer, 5) == 4);
+		assert(strcmp(buffer, "test") == 0);
+	}
+	{
+		std_backport::string_view view = "test";
+		assert(view.to_string() == "test");
+	}
+
+
+
 	assert((v == s));
 	assert((v <= s));
 	assert((v >= s));
