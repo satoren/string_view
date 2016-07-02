@@ -28,8 +28,8 @@ if(CYGWIN OR WIN32)
 endif()
 
 if(HAVE_FLAG_SANITIZE_ADDRESS AND NOT DISABLE_ADDRESS_SANITIZER)
-SET_TARGET_PROPERTIES(test_runner PROPERTIES COMPILE_FLAGS "-fsanitize=address -fno-omit-frame-pointer")
-SET_TARGET_PROPERTIES(test_runner PROPERTIES LINK_FLAGS "-fsanitize=address")
+SET_TARGET_PROPERTIES(string_view_test PROPERTIES COMPILE_FLAGS "-fsanitize=address -fno-omit-frame-pointer")
+SET_TARGET_PROPERTIES(string_view_test PROPERTIES LINK_FLAGS "-fsanitize=address")
 endif(HAVE_FLAG_SANITIZE_ADDRESS AND NOT DISABLE_ADDRESS_SANITIZER)
 
 enable_testing()
