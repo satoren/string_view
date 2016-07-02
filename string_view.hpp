@@ -123,7 +123,7 @@ namespace std_backport
     CONSTEXPR basic_string_view(const CharT* s) : start_(s), end_(s + strlen(s)) {}
 
     basic_string_view& operator=(const basic_string_view& view) {
-      this->start_ = view.start_; this->end_ = view.end_;
+      this->start_ = view.start_; this->end_ = view.end_; return *this;
     }
 
     CONSTEXPR const_iterator begin() const { return start_; }
