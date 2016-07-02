@@ -30,6 +30,7 @@ DEALINGS IN THE SOFTWARE.
 #include <limits>
 #include <iterator>
 #include <stdexcept>
+#include <cassert>
 
 #include <algorithm>
 
@@ -156,12 +157,12 @@ namespace std_backport
     CONSTEXPR bool empty() const { return size() == 0; }
     CONSTEXPR_CPP14 void remove_prefix(size_type n) 
     {
-      assert(n < size());
+      assert(n <= size());
       start_ += n;
     }
     CONSTEXPR_CPP14 void remove_suffix(size_type n) 
     {
-      assert(n < size());
+      assert(n <= size());
       end_ -= n; 
     }
     CONSTEXPR_CPP14 void swap(basic_string_view& v)
