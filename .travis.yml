@@ -4,6 +4,9 @@ language: cpp
 compiler:
   - clang
   - gcc
+before_install:
+  - pip install --user 'requests[security]'
+  - pip install --user cpp-coveralls
 install:
 - if [ "$CXX" = "g++" ]; then export COVERAGE=$COV; fi
 - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
