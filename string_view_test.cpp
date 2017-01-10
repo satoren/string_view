@@ -21,15 +21,14 @@ void compare_with_std_string_test()
 assert(s.FNAME("is") == v.FNAME("is"));\
 assert(s.FNAME("is", 4) == v.FNAME("is", 4));\
 assert(s.FNAME("s", 4) == v.FNAME("s", 4));\
+assert(s.FNAME("s", 4 , 1) == v.FNAME("s", 4 , 1));\
 assert(s.FNAME("s") == v.FNAME("s"));\
 assert(s.FNAME('q') == v.FNAME('q'));\
 assert(s.FNAME('q') == v.FNAME('q'));\
 assert(s.FNAME('q', s.size()) == v.FNAME('q', v.size()));\
-assert(s.FNAME('q', s.size() + 1) == v.FNAME('q', v.size() + 1));\
+assert(s.FNAME('q', s.size() + 1) == v.FNAME('q', v.size() + 1));
 
 	FIND_TEST_FUNCTION(find);
-
-
 	FIND_TEST_FUNCTION(rfind);
 	FIND_TEST_FUNCTION(find_first_of);
 	FIND_TEST_FUNCTION(find_last_of);
@@ -103,10 +102,18 @@ assert(s.FNAME('q', s.size() + 1) == v.FNAME('q', v.size() + 1));\
 	assert(catch_except);
 }
 
-
-
 int main()
 {
+
+#if __cplusplus >= 201103L || (defined(_MSC_VER) && _MSC_VER >= 1800)
+	constexpr std_backport::string_view constexpr_view;
+	constexpr std_backport::string_view constexpr_view2 = constexpr_view;
+	assert(constexpr_view2 == constexpr_view);
+	constexpr std_backport::string_view constexpr_view3("test");
+	constexpr std_backport::string_view constexpr_view4 = constexpr_view3;
+	assert(constexpr_view4 == constexpr_view3);
+#endif
+
 	std_backport::string_view view("test");
 
 	std::string str("test2");

@@ -38,8 +38,9 @@ namespace std_backport
 {
 
 #define CONSTEXPR_BACKUP CONSTEXPR
+#define CONSTEXPR_CPP14_BACKUP CONSTEXPR_CPP14
 #undef CONSTEXPR
-#if defined(_HAS_CONSTEXPR) ||  __cplusplus >= 201103L
+#if defined(_HAS_CONSTEXPR) ||  __cplusplus >= 201103L || (defined(_MSC_VER) && _MSC_VER >= 1800)
 #define CONSTEXPR constexpr
 #else
 #define CONSTEXPR
@@ -57,28 +58,28 @@ namespace std_backport
     typedef T* pointer;
     typedef T& reference;
     typedef std::ptrdiff_t difference_type;
-    pointer_iterator() :p_(0) {}
-    pointer_iterator(T* x) :p_(x) {}
-    pointer_iterator(const pointer_iterator& it) : p_(it.p_) {}
+	CONSTEXPR pointer_iterator() :p_(0) {}
+	CONSTEXPR pointer_iterator(T* x) :p_(x) {}
+	CONSTEXPR pointer_iterator(const pointer_iterator& it) : p_(it.p_) {}
 
-    reference operator*() const { return *p_; }
-    pointer_iterator operator+ (difference_type n) const { return pointer_iterator(p_ + n); }
-    pointer_iterator& operator+= (difference_type n) { p_ += n; return *this; }
-    pointer_iterator operator- (difference_type n) const { return pointer_iterator(p_ - n); }
-    pointer_iterator& operator-= (difference_type n) { p_ -= n; return *this; }
+	CONSTEXPR reference operator*() const { return *p_; }
+	CONSTEXPR pointer_iterator operator+ (difference_type n) const { return pointer_iterator(p_ + n); }
+	CONSTEXPR_CPP14 pointer_iterator& operator+= (difference_type n) { p_ += n; return *this; }
+	CONSTEXPR pointer_iterator operator- (difference_type n) const { return pointer_iterator(p_ - n); }
+	CONSTEXPR_CPP14 pointer_iterator& operator-= (difference_type n) { p_ -= n; return *this; }
 
-    difference_type operator- (pointer_iterator o) const { return p_ - o.p_; }
+	CONSTEXPR difference_type operator- (pointer_iterator o) const { return p_ - o.p_; }
 
-    pointer_iterator& operator++() { p_++; return *this; }
-    pointer_iterator  operator++(int) { pointer_iterator tmp(*this); operator++(); return tmp; }
-    pointer_iterator& operator--() { p_--; return *this; }
-    pointer_iterator  operator--(int) { pointer_iterator tmp(*this); operator--(); return tmp; }
-    bool operator==(const pointer_iterator& rhs) { return p_ == rhs.p_; }
-    bool operator!=(const pointer_iterator& rhs) { return p_ != rhs.p_; }
-    bool operator<(const pointer_iterator& rhs) { return p_ < rhs.p_; }
-    bool operator>(const pointer_iterator& rhs) { return rhs < *this; }
-    bool operator<=(const pointer_iterator& rhs) { return !(*this > rhs); }
-    bool operator>=(const pointer_iterator& rhs) { return !(*this < rhs); }
+	CONSTEXPR_CPP14 pointer_iterator& operator++() { p_++; return *this; }
+	CONSTEXPR_CPP14 pointer_iterator  operator++(int) { pointer_iterator tmp(*this); operator++(); return tmp; }
+	CONSTEXPR_CPP14 pointer_iterator& operator--() { p_--; return *this; }
+	CONSTEXPR_CPP14 pointer_iterator  operator--(int) { pointer_iterator tmp(*this); operator--(); return tmp; }
+	CONSTEXPR bool operator==(const pointer_iterator& rhs) { return p_ == rhs.p_; }
+	CONSTEXPR bool operator!=(const pointer_iterator& rhs) { return p_ != rhs.p_; }
+	CONSTEXPR bool operator<(const pointer_iterator& rhs) { return p_ < rhs.p_; }
+	CONSTEXPR bool operator>(const pointer_iterator& rhs) { return rhs < *this; }
+	CONSTEXPR bool operator<=(const pointer_iterator& rhs) { return !(*this > rhs); }
+	CONSTEXPR bool operator>=(const pointer_iterator& rhs) { return !(*this < rhs); }
   private:
     pointer p_;
   };
@@ -324,9 +325,19 @@ namespace std_backport
   };
 
 #undef CONSTEXPR
-#define CONSTEXPR 
+#define CONSTEXPR CONSTEXPR_BACKUP
 #undef CONSTEXPR_BACKUP
+
+#undef CONSTEXPR_CPP14
+#define CONSTEXPR_CPP14 CONSTEXPR_CPP14_BACKUP
+#undef CONSTEXPR_CPP14_BACKUP
+
 
   typedef basic_string_view<char> string_view;
   typedef basic_string_view<wchar_t> wstring_view;
+
+#if defined(_HAS_CONSTEXPR) ||  __cplusplus >= 201103L || (defined(_MSC_VER) && _MSC_VER >= 1800)
+  typedef basic_string_view<char16_t> u16string_view;
+  typedef basic_string_view<char32_t> u32string_view;
+#endif
 };
