@@ -52,11 +52,13 @@ namespace std_backport
 #endif
 
   template<typename T>
-  class pointer_iterator :public std::iterator<std::random_access_iterator_tag, T>
+  class pointer_iterator
   {
   public:
+	typedef std::random_access_iterator_tag iterator_category;
     typedef T* pointer;
     typedef T& reference;
+	typedef reference value_type;
     typedef std::ptrdiff_t difference_type;
 	CONSTEXPR pointer_iterator() :p_(0) {}
 	CONSTEXPR pointer_iterator(T* x) :p_(x) {}
