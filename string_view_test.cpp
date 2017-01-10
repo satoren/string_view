@@ -102,6 +102,7 @@ assert(s.FNAME('q', s.size() + 1) == v.FNAME('q', v.size() + 1));
 	assert(catch_except);
 }
 
+
 int main()
 {
 
@@ -109,9 +110,11 @@ int main()
 	constexpr std_backport::string_view constexpr_view;
 	constexpr std_backport::string_view constexpr_view2 = constexpr_view;
 	assert(constexpr_view2 == constexpr_view);
+	assert(constexpr_view2 == "");
 	constexpr std_backport::string_view constexpr_view3("test");
 	constexpr std_backport::string_view constexpr_view4 = constexpr_view3;
 	assert(constexpr_view4 == constexpr_view3);
+	assert(constexpr_view4 == "test");
 #endif
 
 	std_backport::string_view view("test");
