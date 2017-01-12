@@ -2,12 +2,12 @@
 #include <cstring>
 #include <iostream>
 
-#if __cplusplus >= 201103L || (defined(_MSC_VER) && _MSC_VER >= 1800)
+#if __cplusplus >= 201103L || (defined(_MSC_VER) && _MSC_VER >= 1900)
 #include "constexpr_string.hpp"
 #endif
 
 int main() {
-#if __cplusplus >= 201103L || (defined(_MSC_VER) && _MSC_VER >= 1800)
+#if __cplusplus >= 201103L || (defined(_MSC_VER) && _MSC_VER >= 1900)
   using namespace compiletime;
 
   constexpr auto test = to_constexpr_string("abc");

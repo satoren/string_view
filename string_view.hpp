@@ -40,7 +40,7 @@ namespace std_backport
 #define CONSTEXPR_BACKUP CONSTEXPR
 #define CONSTEXPR_CPP14_BACKUP CONSTEXPR_CPP14
 #undef CONSTEXPR
-#if defined(_HAS_CONSTEXPR) ||  __cplusplus >= 201103L || (defined(_MSC_VER) && _MSC_VER >= 1800)
+#if defined(_HAS_CONSTEXPR) ||  __cplusplus >= 201103L || (defined(_MSC_VER) && _MSC_VER >= 1900)
 #define CONSTEXPR constexpr
 #else
 #define CONSTEXPR

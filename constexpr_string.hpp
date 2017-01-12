@@ -28,7 +28,7 @@ DEALINGS IN THE SOFTWARE.
 #include <utility>
 
 
-#if __cplusplus >= 201103L || (defined(_MSC_VER) && _MSC_VER >= 1800)
+#if __cplusplus >= 201103L || (defined(_MSC_VER) && _MSC_VER >= 1900)
 namespace compiletime {
 template <typename CharT, std::size_t N>
 struct basic_constexpr_string {
