@@ -6,6 +6,8 @@ project (string_view)
 
 add_executable(string_view_test string_view.hpp string_view_test.cpp)
 
+add_executable(constexpr_string_test constexpr_string.hpp constexpr_string_test.cpp)
+
 
 #check for address sanitizer support
 if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
@@ -15,12 +17,6 @@ if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
 elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
     if (${CMAKE_CXX_COMPILER_VERSION} VERSION_GREATER 3.2)
       set(HAVE_FLAG_SANITIZE_ADDRESS TRUE)
-    endif()
-    #detect stack-buffer-overflow at clang++3.4(on ubuntu 12.04) with luajit but don't know reason
-    if(${CMAKE_CXX_COMPILER_VERSION} VERSION_EQUAL 3.4)
-      if(${LUA_SEARCH_LIB_NAME} STREQUAL "luajit")
-        unset(HAVE_FLAG_SANITIZE_ADDRESS)
-      endif()
     endif()
 endif()
 if(CYGWIN OR WIN32)
@@ -41,3 +37,6 @@ endif(COVERAGE)
 add_test(
   NAME string_view_test
   COMMAND $<TARGET_FILE:string_view_test>)
+add_test(
+  NAME constexpr_string_test
+  COMMAND $<TARGET_FILE:constexpr_string_test>)
