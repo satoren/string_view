@@ -25,6 +25,8 @@ DEALINGS IN THE SOFTWARE.
 */
 
 #include <string>
+#include <utility>
+
 
 #if __cplusplus >= 201103L || (defined(_MSC_VER) && _MSC_VER >= 1800)
 namespace compiletime {
