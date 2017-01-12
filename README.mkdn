@@ -2,10 +2,8 @@
 
 Licensed under Boost license
 
-
-## Version
-1.0.0 [![Build Status](https://travis-ci.org/satoren/string_view.svg?branch=master)](https://travis-ci.org/satoren/string_view.svg)
-
+[![Build Status](https://travis-ci.org/satoren/string_view.svg?branch=master)](https://travis-ci.org/satoren/string_view.svg)
+[![Coverage Status](https://coveralls.io/repos/github/satoren/string_view/badge.svg?branch=master)](https://coveralls.io/github/satoren/string_view?branch=master)
 
 ## Introduction
 http://en.cppreference.com/w/cpp/experimental/basic_string_view
