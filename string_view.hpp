@@ -224,7 +224,7 @@ namespace std_backport
     CONSTEXPR_CPP14 int compare(basic_string_view v) const
     {
       int r = traits_type::compare(data(), v.data(), std::min(size(), v.size()));
-      return r==0? size() - v.size():r;
+      return r==0? static_cast<int>(size()) - static_cast<int>(v.size()):r;
     }
     CONSTEXPR_CPP14 int compare(size_type pos1, size_type count1,
       basic_string_view v) const {return substr(pos1, count1).compare(v);}
