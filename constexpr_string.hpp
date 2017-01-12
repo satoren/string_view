@@ -77,6 +77,7 @@ using std::index_sequence;
 #else
 template <std::size_t... Indices>
 struct index_sequence {};
+
 template <std::size_t first, std::size_t last, class result = index_sequence<>,
           bool flag = first >= last>
 struct make_index_sequence_t {
@@ -96,35 +97,38 @@ constexpr basic_constexpr_string<CharT, sizeof...(Indices)> build_string(
     const CharT* str, index_sequence<Indices...>) {
   return basic_constexpr_string<CharT, sizeof...(Indices)>{str[Indices]...};
 }
-template <typename CharT, std::size_t... Indices, std::size_t... Indices2>
+template <typename CharT, std::size_t N1, std::size_t N2,
+          std::size_t... Indices1, std::size_t... Indices2>
 constexpr basic_constexpr_string<CharT,
-                                 sizeof...(Indices) + sizeof...(Indices2)>
-append_string(const CharT* str, index_sequence<Indices...>, const CharT* str2,
-              index_sequence<Indices2...>) {
+                                 sizeof...(Indices1) + sizeof...(Indices2)>
+concat(const CharT (&str1)[N1], index_sequence<Indices1...>,
+       const CharT (&str2)[N2], index_sequence<Indices2...>) {
   return basic_constexpr_string<CharT,
-                                sizeof...(Indices) + sizeof...(Indices2)>{
-      str[Indices]..., str2[Indices2]...};
+                                sizeof...(Indices1) + sizeof...(Indices2)>{
+      str1[Indices1]..., str2[Indices2]...};
 }
-template <typename CharT>
-constexpr int compare(const CharT* str, const CharT* str2, std::size_t len) {
-  return len == 0 ? 0
-                  : (*str) != (*str2) ? (*str) - (*str2)
-                                      : compare(str + 1, str2 + 1, len - 1);
+template <typename CharT, std::size_t N1, std::size_t N2>
+constexpr int compare(const CharT (&str1)[N1], const CharT (&str2)[N2],
+                      std::size_t pos, std::size_t len) {
+  return len == pos
+             ? 0
+             : str1[pos] != str2[pos] ? str1[pos] - str2[pos]
+                                      : compare(str1, str2, pos + 1, len);
 }
 }
 
 template <typename CharT, std::size_t N>
 constexpr int basic_constexpr_string<CharT, N>::compare(
     const basic_constexpr_string<CharT, N>& n) const {
-  return detail::compare(&buffer[0], &n.buffer[0], N);
+  return detail::compare(buffer, n.buffer, 0, N);
 }
 
 template <typename CharT, std::size_t N1, std::size_t N2>
 constexpr basic_constexpr_string<CharT, N1 + N2> operator+(
     const basic_constexpr_string<CharT, N1>& cstr1,
     const basic_constexpr_string<CharT, N2>& cstr2) {
-  return detail::append_string(&cstr1.buffer[0], make_index_sequence<N1>(),
-                               &cstr2.buffer[0], make_index_sequence<N2>());
+  return detail::concat(cstr1.buffer, make_index_sequence<N1>(), cstr2.buffer,
+                        make_index_sequence<N2>());
 }
 template <typename CharT, std::size_t N>
 std::basic_string<CharT> operator+(
