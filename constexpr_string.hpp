@@ -123,7 +123,7 @@ template <std::size_t N2>
 constexpr basic_constexpr_string<CharT, N + N2>
 basic_constexpr_string<CharT, N>::operator+(
     const basic_constexpr_string<CharT, N2>& n) const {
-  return detail::append_string(buffer, make_index_sequence<N>(), n.buffer,
+  return detail::append_string(&buffer[0], make_index_sequence<N>(), &n.buffer[0],
                                make_index_sequence<N2>());
 }
 template <typename CharT, std::size_t N>
