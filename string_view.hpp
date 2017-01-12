@@ -42,6 +42,7 @@ namespace std_backport
 #undef CONSTEXPR
 #if defined(_HAS_CONSTEXPR) ||  __cplusplus >= 201103L || (defined(_MSC_VER) && _MSC_VER >= 1900)
 #define CONSTEXPR constexpr
+#define STD_BACKPORT_USE_CONSTEXPR
 #else
 #define CONSTEXPR
 #endif
@@ -218,8 +219,23 @@ namespace std_backport
     CONSTEXPR basic_string_view
       substr(size_type pos = 0, size_type count = npos) const
     {
+#ifdef STD_BACKPORT_USE_CONSTEXPR
       return pos >= size() ? throw std::out_of_range("basic_string_view::substr out of range"): 
-        (count > size() - pos) ? substr(pos,size() - pos) : basic_string_view(data() + pos , count);
+       (count > size() - pos) ? substr(pos,size() - pos) : basic_string_view(data() + pos , count);
+#else
+      if(pos >= size())
+      {
+        throw std::out_of_range("basic_string_view::substr out of range");
+      }
+      if(count > size() - pos)
+      {
+        return substr(pos,size() - pos);
+      }
+      else
+      {
+        return basic_string_view(data() + pos , count);
+      }
+#endif
     }
     CONSTEXPR_CPP14 int compare(basic_string_view v) const
     {

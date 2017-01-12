@@ -106,7 +106,7 @@ assert(s.FNAME('q', s.size() + 1) == v.FNAME('q', v.size() + 1));
 int main()
 {
 
-#if __cplusplus >= 201103L || (defined(_MSC_VER) && _MSC_VER >= 1900)
+#ifdef STD_BACKPORT_USE_CONSTEXPR
 	constexpr std_backport::string_view constexpr_view;
 	constexpr std_backport::string_view constexpr_view2 = constexpr_view;
 	assert(constexpr_view2 == constexpr_view);
