@@ -1,0 +1,26 @@
+version: 1.0.{build}
+image: Visual Studio 2015
+configuration:
+- Debug
+- Release
+environment:
+  matrix:
+  - CMAKE_GEN_TYPE: '"Visual Studio 9 2008"'
+  - CMAKE_GEN_TYPE: '"Visual Studio 10 2010"'
+  - CMAKE_GEN_TYPE: '"Visual Studio 11 2012"'
+  - CMAKE_GEN_TYPE: '"Visual Studio 12 2013"'
+  - CMAKE_GEN_TYPE: '"Visual Studio 14 2015"'
+  - CMAKE_GEN_TYPE: '"Visual Studio 14 2015 Win64"'
+build_script:
+- ps: >-
+    if(!(Test-Path -Path build )){
+      mkdir build
+    }
+
+    cd build
+
+    cmake ../ -G $env:CMAKE_GEN_TYPE
+
+    cmake --build . --config $env:CONFIGURATION
+test_script:
+- ps: ctest -C $env:CONFIGURATION --output-on-failure
