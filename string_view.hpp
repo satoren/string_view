@@ -76,12 +76,12 @@ namespace std_backport
 	CONSTEXPR_CPP14 pointer_iterator  operator++(int) { pointer_iterator tmp(*this); operator++(); return tmp; }
 	CONSTEXPR_CPP14 pointer_iterator& operator--() { p_--; return *this; }
 	CONSTEXPR_CPP14 pointer_iterator  operator--(int) { pointer_iterator tmp(*this); operator--(); return tmp; }
-	CONSTEXPR bool operator==(const pointer_iterator& rhs) { return p_ == rhs.p_; }
-	CONSTEXPR bool operator!=(const pointer_iterator& rhs) { return p_ != rhs.p_; }
-	CONSTEXPR bool operator<(const pointer_iterator& rhs) { return p_ < rhs.p_; }
-	CONSTEXPR bool operator>(const pointer_iterator& rhs) { return rhs < *this; }
-	CONSTEXPR bool operator<=(const pointer_iterator& rhs) { return !(*this > rhs); }
-	CONSTEXPR bool operator>=(const pointer_iterator& rhs) { return !(*this < rhs); }
+	CONSTEXPR bool operator==(const pointer_iterator& rhs)const { return p_ == rhs.p_; }
+	CONSTEXPR bool operator!=(const pointer_iterator& rhs)const { return p_ != rhs.p_; }
+	CONSTEXPR bool operator<(const pointer_iterator& rhs)const { return p_ < rhs.p_; }
+	CONSTEXPR bool operator>(const pointer_iterator& rhs)const { return rhs < *this; }
+	CONSTEXPR bool operator<=(const pointer_iterator& rhs)const { return !(*this > rhs); }
+	CONSTEXPR bool operator>=(const pointer_iterator& rhs)const { return !(*this < rhs); }
   private:
     pointer p_;
   };
