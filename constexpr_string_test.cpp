@@ -13,9 +13,6 @@ int main() {
   constexpr auto test = to_constexpr_string("abc");
   constexpr auto test2 = to_constexpr_string("def");
   constexpr auto test3 = test + test2;
-  constexpr auto longstring = to_constexpr_string("abcdefghijklmnopqrstuvwxyz");
-  constexpr auto longlongstring =
-      longstring + longstring + longstring + longstring + longstring;
 
   std::string teststr("gh");
   assert(test.to_string() == "abc");
