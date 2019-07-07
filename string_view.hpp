@@ -242,7 +242,7 @@ class basic_string_view {
   }
 #endif
   size_type copy(CharT* dest, size_type count, size_type pos = 0) const {
-    if (pos >= size()) {
+    if (pos > size()) {
       throw std::out_of_range("basic_string_view::copy out of range");
     }
     size_t copied = 0;
