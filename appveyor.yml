@@ -1,16 +1,25 @@
 version: 1.0.{build}
-image: Visual Studio 2015
 configuration:
 - Debug
 - Release
 environment:
   matrix:
-  - CMAKE_GEN_TYPE: '"Visual Studio 9 2008"'
-  - CMAKE_GEN_TYPE: '"Visual Studio 10 2010"'
-  - CMAKE_GEN_TYPE: '"Visual Studio 11 2012"'
-  - CMAKE_GEN_TYPE: '"Visual Studio 12 2013"'
-  - CMAKE_GEN_TYPE: '"Visual Studio 14 2015"'
-  - CMAKE_GEN_TYPE: '"Visual Studio 14 2015 Win64"'
+  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+    CMAKE_GEN_TYPE: '"Visual Studio 9 2008"'
+  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+    CMAKE_GEN_TYPE: '"Visual Studio 10 2010"'
+  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+    CMAKE_GEN_TYPE: '"Visual Studio 11 2012"'
+  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+    CMAKE_GEN_TYPE: '"Visual Studio 12 2013"'
+  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+    CMAKE_GEN_TYPE: '"Visual Studio 14 2015"'
+  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+    CMAKE_GEN_TYPE: '"Visual Studio 14 2015 Win64"'
+  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+    CMAKE_GEN_TYPE: '"Visual Studio 15 2017"'
+  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+    CMAKE_GEN_TYPE: '"Visual Studio 15 2017 Win64"'
 build_script:
 - ps: >-
     if(!(Test-Path -Path build )){

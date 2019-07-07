@@ -149,36 +149,36 @@ class basic_string_view {
   static const size_type npos = size_type(-1);
 #endif
 
-  CONSTEXPR basic_string_view() : start_(0), end_(0) {}
+  CONSTEXPR basic_string_view() : start_(0), length_(0) {}
   CONSTEXPR basic_string_view(const basic_string_view& other)
-      : start_(other.start_), end_(other.end_) {}
+      : start_(other.start_), length_(other.length_) {}
   template <class Allocator>
   basic_string_view(const std::basic_string<CharT, Traits, Allocator>& str)
-      : start_(0), end_(0) {
+      : start_(0), length_(0) {
     if (!str.empty()) {
       start_ = &str[0];
-      end_ = start_ + str.size();
+      length_ = str.size();
     }
   }
   CONSTEXPR basic_string_view(const CharT* s, size_type count)
-      : start_(s), end_(s + count) {}
+      : start_(s), length_(count) {}
   CONSTEXPR basic_string_view(const CharT* s)
-      : start_(s), end_(s + strlen(s)) {}
+      : start_(s), length_(strlen(s)) {}
 
   basic_string_view& operator=(const basic_string_view& view) {
     this->start_ = view.start_;
-    this->end_ = view.end_;
+    this->length_ = view.length_;
     return *this;
   }
 
   CONSTEXPR const_iterator begin() const { return start_; }
   CONSTEXPR const_iterator cbegin() const { return start_; }
 
-  CONSTEXPR const_iterator end() const { return end_; }
-  CONSTEXPR const_iterator cend() const { return end_; }
+  CONSTEXPR const_iterator end() const { return start_ + length_; }
+  CONSTEXPR const_iterator cend() const { return start_ + length_; }
 
   CONSTEXPR const_reverse_iterator rbegin() const {
-    return const_reverse_iterator(end_);
+    return const_reverse_iterator(start_ + length_);
   }
   CONSTEXPR const_reverse_iterator rend() const {
     return const_reverse_iterator(start_);
@@ -195,8 +195,8 @@ class basic_string_view {
                ? throw std::out_of_range("basic_string_view at out of range")
                : *(start_ + pos);
   }
-  CONSTEXPR const_reference front() const { return *start_; }
-  CONSTEXPR const_reference back() const { return *end_; }
+  CONSTEXPR const_reference front() const { return *begin(); }
+  CONSTEXPR const_reference back() const { return *end(); }
   CONSTEXPR const_pointer data() const { return &(*start_); }
 
   CONSTEXPR size_type size() const { return std::distance(begin(), end()); }
@@ -208,14 +208,15 @@ class basic_string_view {
   CONSTEXPR_CPP14 void remove_prefix(size_type n) {
     assert(n <= size());
     start_ += n;
+    length_ -= n;
   }
   CONSTEXPR_CPP14 void remove_suffix(size_type n) {
     assert(n <= size());
-    end_ -= n;
+    length_ -= n;
   }
   CONSTEXPR_CPP14 void swap(basic_string_view& v) {
     std::swap(start_, v.start_);
-    std::swap(end_, v.end_);
+    std::swap(length_, v.length_);
   }
 #if __cplusplus >= 201103L
   template <class Allocator = std::allocator<CharT> >
@@ -425,9 +426,9 @@ class basic_string_view {
 
  private:
   CONSTEXPR basic_string_view(const iterator& s, const iterator& e)
-      : start_(s), end_(e) {}
+      : start_(s), length_(e - s) {}
   iterator start_;
-  iterator end_;
+  size_type length_;
 
   CONSTEXPR size_type find_to_pos(const_iterator it) const {
     return it == end() ? npos : size_type(it - begin());
