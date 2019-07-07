@@ -26,7 +26,7 @@ DEALINGS IN THE SOFTWARE.
 */
 
 #include <cassert>
-#include <cstddef>  //for ptrdiff_t
+#include <cstddef> //for ptrdiff_t
 #include <iterator>
 #include <limits>
 #include <stdexcept>
@@ -39,7 +39,7 @@ namespace std_backport {
 #define CONSTEXPR_BACKUP CONSTEXPR
 #define CONSTEXPR_CPP14_BACKUP CONSTEXPR_CPP14
 #undef CONSTEXPR
-#if defined(_HAS_CONSTEXPR) || __cplusplus >= 201103L || \
+#if defined(_HAS_CONSTEXPR) || __cplusplus >= 201103L ||                       \
     (defined(_MSC_VER) && _MSC_VER >= 1900)
 #define CONSTEXPR constexpr
 #define STD_BACKPORT_USE_CONSTEXPR
@@ -52,30 +52,29 @@ namespace std_backport {
 #define CONSTEXPR_CPP14
 #endif
 
-template <typename T>
-class pointer_iterator {
- public:
+template <typename T> class pointer_iterator {
+public:
   typedef std::random_access_iterator_tag iterator_category;
-  typedef T* pointer;
-  typedef T& reference;
+  typedef T *pointer;
+  typedef T &reference;
   typedef reference value_type;
   typedef std::ptrdiff_t difference_type;
   CONSTEXPR pointer_iterator() : p_(0) {}
-  CONSTEXPR pointer_iterator(T* x) : p_(x) {}
-  CONSTEXPR pointer_iterator(const pointer_iterator& it) : p_(it.p_) {}
+  CONSTEXPR pointer_iterator(T *x) : p_(x) {}
+  CONSTEXPR pointer_iterator(const pointer_iterator &it) : p_(it.p_) {}
 
   CONSTEXPR reference operator*() const { return *p_; }
   CONSTEXPR pointer_iterator operator+(difference_type n) const {
     return pointer_iterator(p_ + n);
   }
-  CONSTEXPR_CPP14 pointer_iterator& operator+=(difference_type n) {
+  CONSTEXPR_CPP14 pointer_iterator &operator+=(difference_type n) {
     p_ += n;
     return *this;
   }
   CONSTEXPR pointer_iterator operator-(difference_type n) const {
     return pointer_iterator(p_ - n);
   }
-  CONSTEXPR_CPP14 pointer_iterator& operator-=(difference_type n) {
+  CONSTEXPR_CPP14 pointer_iterator &operator-=(difference_type n) {
     p_ -= n;
     return *this;
   }
@@ -84,7 +83,7 @@ class pointer_iterator {
     return p_ - o.p_;
   }
 
-  CONSTEXPR_CPP14 pointer_iterator& operator++() {
+  CONSTEXPR_CPP14 pointer_iterator &operator++() {
     p_++;
     return *this;
   }
@@ -93,7 +92,7 @@ class pointer_iterator {
     operator++();
     return tmp;
   }
-  CONSTEXPR_CPP14 pointer_iterator& operator--() {
+  CONSTEXPR_CPP14 pointer_iterator &operator--() {
     p_--;
     return *this;
   }
@@ -102,38 +101,38 @@ class pointer_iterator {
     operator--();
     return tmp;
   }
-  CONSTEXPR bool operator==(const pointer_iterator& rhs) const {
+  CONSTEXPR bool operator==(const pointer_iterator &rhs) const {
     return p_ == rhs.p_;
   }
-  CONSTEXPR bool operator!=(const pointer_iterator& rhs) const {
+  CONSTEXPR bool operator!=(const pointer_iterator &rhs) const {
     return p_ != rhs.p_;
   }
-  CONSTEXPR bool operator<(const pointer_iterator& rhs) const {
+  CONSTEXPR bool operator<(const pointer_iterator &rhs) const {
     return p_ < rhs.p_;
   }
-  CONSTEXPR bool operator>(const pointer_iterator& rhs) const {
+  CONSTEXPR bool operator>(const pointer_iterator &rhs) const {
     return rhs < *this;
   }
-  CONSTEXPR bool operator<=(const pointer_iterator& rhs) const {
+  CONSTEXPR bool operator<=(const pointer_iterator &rhs) const {
     return !(*this > rhs);
   }
-  CONSTEXPR bool operator>=(const pointer_iterator& rhs) const {
+  CONSTEXPR bool operator>=(const pointer_iterator &rhs) const {
     return !(*this < rhs);
   }
 
- private:
+private:
   pointer p_;
 };
 
-template <typename CharT, typename Traits = std::char_traits<CharT> >
+template <typename CharT, typename Traits = std::char_traits<CharT>>
 class basic_string_view {
- public:
+public:
   typedef Traits traits_type;
   typedef CharT value_type;
-  typedef CharT* pointer;
-  typedef const CharT* const_pointer;
-  typedef CharT& reference;
-  typedef const CharT& const_reference;
+  typedef CharT *pointer;
+  typedef const CharT *const_pointer;
+  typedef CharT &reference;
+  typedef const CharT &const_reference;
 
   typedef pointer_iterator<const CharT> const_iterator;
   typedef const_iterator iterator;
@@ -150,22 +149,21 @@ class basic_string_view {
 #endif
 
   CONSTEXPR basic_string_view() : start_(0), length_(0) {}
-  CONSTEXPR basic_string_view(const basic_string_view& other)
+  CONSTEXPR basic_string_view(const basic_string_view &other)
       : start_(other.start_), length_(other.length_) {}
   template <class Allocator>
-  basic_string_view(const std::basic_string<CharT, Traits, Allocator>& str)
+  basic_string_view(const std::basic_string<CharT, Traits, Allocator> &str)
       : start_(0), length_(0) {
     if (!str.empty()) {
       start_ = &str[0];
       length_ = str.size();
     }
   }
-  CONSTEXPR basic_string_view(const CharT* s, size_type count)
+  CONSTEXPR basic_string_view(const CharT *s, size_type count)
       : start_(s), length_(count) {}
-  CONSTEXPR basic_string_view(const CharT* s)
-      : start_(s), length_(strlen(s)) {}
+  CONSTEXPR basic_string_view(const CharT *s) : start_(s), length_(strlen(s)) {}
 
-  basic_string_view& operator=(const basic_string_view& view) {
+  basic_string_view &operator=(const basic_string_view &view) {
     this->start_ = view.start_;
     this->length_ = view.length_;
     return *this;
@@ -214,14 +212,14 @@ class basic_string_view {
     assert(n <= size());
     length_ -= n;
   }
-  CONSTEXPR_CPP14 void swap(basic_string_view& v) {
+  CONSTEXPR_CPP14 void swap(basic_string_view &v) {
     std::swap(start_, v.start_);
     std::swap(length_, v.length_);
   }
 #if __cplusplus >= 201103L
-  template <class Allocator = std::allocator<CharT> >
-  std::basic_string<CharT, Traits, Allocator> to_string(
-      const Allocator& a = Allocator()) const {
+  template <class Allocator = std::allocator<CharT>>
+  std::basic_string<CharT, Traits, Allocator>
+  to_string(const Allocator &a = Allocator()) const {
     return std::basic_string<CharT, Traits, Allocator>(begin(), end());
   }
   template <class Allocator>
@@ -233,8 +231,8 @@ class basic_string_view {
     return std::basic_string<CharT, Traits>(begin(), end());
   }
   template <class Allocator>
-  std::basic_string<CharT, Traits, Allocator> to_string(
-      const Allocator& a) const {
+  std::basic_string<CharT, Traits, Allocator>
+  to_string(const Allocator &a) const {
     return std::basic_string<CharT, Traits, Allocator>(begin(), end());
   }
   template <class Allocator>
@@ -242,7 +240,7 @@ class basic_string_view {
     return std::basic_string<CharT, Traits, Allocator>(begin(), end());
   }
 #endif
-  size_type copy(CharT* dest, size_type count, size_type pos = 0) const {
+  size_type copy(CharT *dest, size_type count, size_type pos = 0) const {
     if (pos > size()) {
       throw std::out_of_range("basic_string_view::copy out of range");
     }
@@ -256,10 +254,10 @@ class basic_string_view {
                                      size_type count = npos) const {
 #ifdef STD_BACKPORT_USE_CONSTEXPR
     return pos > size() ? throw std::out_of_range(
-                               "basic_string_view::substr out of range")
-                         : (count > size() - pos)
-                               ? substr(pos, size() - pos)
-                               : basic_string_view(data() + pos, count);
+                              "basic_string_view::substr out of range")
+                        : (count > size() - pos)
+                              ? substr(pos, size() - pos)
+                              : basic_string_view(data() + pos, count);
 #else
     if (pos > size()) {
       throw std::out_of_range("basic_string_view::substr out of range");
@@ -284,30 +282,31 @@ class basic_string_view {
                               size_type count2) const {
     return substr(pos1, count1).compare(v.substr(pos2, count2));
   }
-  CONSTEXPR_CPP14 int compare(const CharT* s) const {
+  CONSTEXPR_CPP14 int compare(const CharT *s) const {
     return compare(basic_string_view(s));
   }
   CONSTEXPR_CPP14 int compare(size_type pos1, size_type count1,
-                              const CharT* s) const {
+                              const CharT *s) const {
     return substr(pos1, count1).compare(basic_string_view(s));
   }
-  CONSTEXPR_CPP14 int compare(size_type pos1, size_type count1, const CharT* s,
+  CONSTEXPR_CPP14 int compare(size_type pos1, size_type count1, const CharT *s,
                               size_type count2) const {
     return substr(pos1, count1).compare(basic_string_view(s, count2));
   }
 
   CONSTEXPR size_type find(basic_string_view v, size_type pos = 0) const {
-    return pos >= size() ? npos : find_to_pos(std::search(begin() + pos, end(),
-                                                          v.begin(), v.end()));
+    return pos >= size() ? npos
+                         : find_to_pos(std::search(begin() + pos, end(),
+                                                   v.begin(), v.end()));
   }
   CONSTEXPR size_type find(CharT c, size_type pos = 0) const {
     return find(basic_string_view(&c, 1), pos);
   }
-  CONSTEXPR size_type find(const CharT* s, size_type pos,
+  CONSTEXPR size_type find(const CharT *s, size_type pos,
                            size_type count) const {
     return find(basic_string_view(s, count), pos);
   }
-  CONSTEXPR size_type find(const CharT* s, size_type pos = 0) const {
+  CONSTEXPR size_type find(const CharT *s, size_type pos = 0) const {
     return find(basic_string_view(s), pos);
   }
 
@@ -321,11 +320,11 @@ class basic_string_view {
   CONSTEXPR size_type rfind(CharT c, size_type pos = npos) const {
     return rfind(basic_string_view(&c, 1), pos);
   }
-  CONSTEXPR size_type rfind(const CharT* s, size_type pos,
+  CONSTEXPR size_type rfind(const CharT *s, size_type pos,
                             size_type count) const {
     return rfind(basic_string_view(s, count), pos);
   }
-  CONSTEXPR size_type rfind(const CharT* s, size_type pos = npos) const {
+  CONSTEXPR size_type rfind(const CharT *s, size_type pos = npos) const {
     return rfind(basic_string_view(s), pos);
   }
 
@@ -339,11 +338,11 @@ class basic_string_view {
   CONSTEXPR size_type find_first_of(CharT c, size_type pos = 0) const {
     return find_first_of(basic_string_view(&c, 1), pos);
   }
-  CONSTEXPR size_type find_first_of(const CharT* s, size_type pos,
+  CONSTEXPR size_type find_first_of(const CharT *s, size_type pos,
                                     size_type count) const {
     return find_first_of(basic_string_view(s, count), pos);
   }
-  CONSTEXPR size_type find_first_of(const CharT* s, size_type pos = 0) const {
+  CONSTEXPR size_type find_first_of(const CharT *s, size_type pos = 0) const {
     return find_first_of(basic_string_view(s), pos);
   }
 
@@ -358,11 +357,11 @@ class basic_string_view {
   CONSTEXPR size_type find_last_of(CharT c, size_type pos = npos) const {
     return find_last_of(basic_string_view(&c, 1), pos);
   }
-  CONSTEXPR size_type find_last_of(const CharT* s, size_type pos,
+  CONSTEXPR size_type find_last_of(const CharT *s, size_type pos,
                                    size_type count) const {
     return find_last_of(basic_string_view(s, count), pos);
   }
-  CONSTEXPR size_type find_last_of(const CharT* s, size_type pos = npos) const {
+  CONSTEXPR size_type find_last_of(const CharT *s, size_type pos = npos) const {
     return find_last_of(basic_string_view(s), pos);
   }
 
@@ -376,11 +375,11 @@ class basic_string_view {
   CONSTEXPR size_type find_first_not_of(CharT c, size_type pos = 0) const {
     return find_first_not_of(basic_string_view(&c, 1), pos);
   }
-  CONSTEXPR size_type find_first_not_of(const CharT* s, size_type pos,
+  CONSTEXPR size_type find_first_not_of(const CharT *s, size_type pos,
                                         size_type count) const {
     return find_first_not_of(basic_string_view(s, count), pos);
   }
-  CONSTEXPR size_type find_first_not_of(const CharT* s,
+  CONSTEXPR size_type find_first_not_of(const CharT *s,
                                         size_type pos = 0) const {
     return find_first_not_of(basic_string_view(s), pos);
   }
@@ -396,36 +395,36 @@ class basic_string_view {
   CONSTEXPR size_type find_last_not_of(CharT c, size_type pos = npos) const {
     return find_last_not_of(basic_string_view(&c, 1), pos);
   }
-  CONSTEXPR size_type find_last_not_of(const CharT* s, size_type pos,
+  CONSTEXPR size_type find_last_not_of(const CharT *s, size_type pos,
                                        size_type count) const {
     return find_last_not_of(basic_string_view(s, count), pos);
   }
-  CONSTEXPR size_type find_last_not_of(const CharT* s,
+  CONSTEXPR size_type find_last_not_of(const CharT *s,
                                        size_type pos = npos) const {
     return find_last_not_of(basic_string_view(s), pos);
   }
 
-  CONSTEXPR_CPP14 bool operator==(const basic_string_view& rhs) const {
+  CONSTEXPR_CPP14 bool operator==(const basic_string_view &rhs) const {
     return compare(rhs) == 0;
   }
-  CONSTEXPR_CPP14 bool operator!=(const basic_string_view& rhs) const {
+  CONSTEXPR_CPP14 bool operator!=(const basic_string_view &rhs) const {
     return compare(rhs) != 0;
   }
-  CONSTEXPR_CPP14 bool operator<(const basic_string_view& rhs) const {
+  CONSTEXPR_CPP14 bool operator<(const basic_string_view &rhs) const {
     return compare(rhs) < 0;
   }
-  CONSTEXPR_CPP14 bool operator>(const basic_string_view& rhs) const {
+  CONSTEXPR_CPP14 bool operator>(const basic_string_view &rhs) const {
     return rhs < *this;
   }
-  CONSTEXPR_CPP14 bool operator<=(const basic_string_view& rhs) const {
+  CONSTEXPR_CPP14 bool operator<=(const basic_string_view &rhs) const {
     return !(*this > rhs);
   }
-  CONSTEXPR_CPP14 bool operator>=(const basic_string_view& rhs) const {
+  CONSTEXPR_CPP14 bool operator>=(const basic_string_view &rhs) const {
     return !(*this < rhs);
   }
 
- private:
-  CONSTEXPR basic_string_view(const iterator& s, const iterator& e)
+private:
+  CONSTEXPR basic_string_view(const iterator &s, const iterator &e)
       : start_(s), length_(e - s) {}
   iterator start_;
   size_type length_;
@@ -457,9 +456,9 @@ class basic_string_view {
 typedef basic_string_view<char> string_view;
 typedef basic_string_view<wchar_t> wstring_view;
 
-#if defined(_HAS_CONSTEXPR) || __cplusplus >= 201103L || \
+#if defined(_HAS_CONSTEXPR) || __cplusplus >= 201103L ||                       \
     (defined(_MSC_VER) && _MSC_VER >= 1800)
 typedef basic_string_view<char16_t> u16string_view;
 typedef basic_string_view<char32_t> u32string_view;
 #endif
-};
+}; // namespace std_backport
