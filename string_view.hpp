@@ -254,13 +254,13 @@ class basic_string_view {
   CONSTEXPR basic_string_view substr(size_type pos = 0,
                                      size_type count = npos) const {
 #ifdef STD_BACKPORT_USE_CONSTEXPR
-    return pos >= size() ? throw std::out_of_range(
+    return pos > size() ? throw std::out_of_range(
                                "basic_string_view::substr out of range")
                          : (count > size() - pos)
                                ? substr(pos, size() - pos)
                                : basic_string_view(data() + pos, count);
 #else
-    if (pos >= size()) {
+    if (pos > size()) {
       throw std::out_of_range("basic_string_view::substr out of range");
     }
     if (count > size() - pos) {

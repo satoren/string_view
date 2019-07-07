@@ -93,13 +93,15 @@ assert(s.FNAME('q', s.size() + 1) == v.FNAME('q', v.size() + 1));
 	bool catch_except = false;
 	try
 	{
-		v.substr(v.size(), 1);
+		v.substr(v.size() + 1, 1);
 	}
 	catch (std::exception&)
 	{
 		catch_except = true;
 	}
 	assert(catch_except);
+	
+	assert(v.substr(v.size(), 0) == "");
 }
 
 
