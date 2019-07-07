@@ -29,13 +29,12 @@ DEALINGS IN THE SOFTWARE.
 
 #if __cplusplus >= 201103L || (defined(_MSC_VER) && _MSC_VER >= 1900)
 namespace compiletime {
-template <typename CharT, std::size_t N>
-struct basic_constexpr_string {
+template <typename CharT, std::size_t N> struct basic_constexpr_string {
   typedef CharT value_type;
-  typedef CharT* pointer;
-  typedef const CharT* const_pointer;
-  typedef CharT& reference;
-  typedef const CharT& const_reference;
+  typedef CharT *pointer;
+  typedef const CharT *const_pointer;
+  typedef CharT &reference;
+  typedef const CharT &const_reference;
   typedef std::size_t size_type;
 
   constexpr const_pointer c_str() const { return buffer; }
@@ -45,24 +44,24 @@ struct basic_constexpr_string {
 
   constexpr CharT operator[](size_type pos) const { return buffer[pos]; }
 
-  constexpr int compare(const basic_constexpr_string<CharT, N>& v) const;
+  constexpr int compare(const basic_constexpr_string<CharT, N> &v) const;
 
-  constexpr bool operator==(const basic_constexpr_string& rhs) const {
+  constexpr bool operator==(const basic_constexpr_string &rhs) const {
     return compare(rhs) == 0;
   }
-  constexpr bool operator!=(const basic_constexpr_string& rhs) const {
+  constexpr bool operator!=(const basic_constexpr_string &rhs) const {
     return compare(rhs) != 0;
   }
-  constexpr bool operator<(const basic_constexpr_string& rhs) const {
+  constexpr bool operator<(const basic_constexpr_string &rhs) const {
     return compare(rhs) < 0;
   }
-  constexpr bool operator>(const basic_constexpr_string& rhs) const {
+  constexpr bool operator>(const basic_constexpr_string &rhs) const {
     return rhs < *this;
   }
-  constexpr bool operator<=(const basic_constexpr_string& rhs) const {
+  constexpr bool operator<=(const basic_constexpr_string &rhs) const {
     return !(*this > rhs);
   }
-  constexpr bool operator>=(const basic_constexpr_string& rhs) const {
+  constexpr bool operator>=(const basic_constexpr_string &rhs) const {
     return !(*this < rhs);
   }
 
@@ -72,11 +71,10 @@ struct basic_constexpr_string {
 };
 
 #if __cplusplus >= 201402L || (defined(_MSC_VER) && _MSC_VER >= 1900)
-using std::make_index_sequence;
 using std::index_sequence;
+using std::make_index_sequence;
 #else
-template <std::size_t... Indices>
-struct index_sequence {};
+template <std::size_t... Indices> struct index_sequence {};
 
 template <std::size_t first, std::size_t last, class result = index_sequence<>,
           bool flag = first >= last>
@@ -85,7 +83,7 @@ struct make_index_sequence_t {
 };
 template <std::size_t step, std::size_t last, std::size_t... Indices>
 struct make_index_sequence_t<step, last, index_sequence<Indices...>, false>
-    : make_index_sequence_t<step + 1, last, index_sequence<Indices..., step> > {
+    : make_index_sequence_t<step + 1, last, index_sequence<Indices..., step>> {
 };
 template <std::size_t N>
 using make_index_sequence = typename make_index_sequence_t<0, N>::type;
@@ -93,8 +91,8 @@ using make_index_sequence = typename make_index_sequence_t<0, N>::type;
 
 namespace detail {
 template <typename CharT, std::size_t... Indices>
-constexpr basic_constexpr_string<CharT, sizeof...(Indices)> build_string(
-    const CharT* str, index_sequence<Indices...>) {
+constexpr basic_constexpr_string<CharT, sizeof...(Indices)>
+build_string(const CharT *str, index_sequence<Indices...>) {
   return basic_constexpr_string<CharT, sizeof...(Indices)>{str[Indices]...};
 }
 template <typename CharT, std::size_t N1, std::size_t N2,
@@ -115,25 +113,25 @@ constexpr int compare(const CharT (&str1)[N1], const CharT (&str2)[N2],
              : str1[pos] != str2[pos] ? str1[pos] - str2[pos]
                                       : compare(str1, str2, pos + 1, len);
 }
-}
+} // namespace detail
 
 template <typename CharT, std::size_t N>
 constexpr int basic_constexpr_string<CharT, N>::compare(
-    const basic_constexpr_string<CharT, N>& n) const {
+    const basic_constexpr_string<CharT, N> &n) const {
   return detail::compare(buffer, n.buffer, 0, N);
 }
 
 template <typename CharT, std::size_t N1, std::size_t N2>
-constexpr basic_constexpr_string<CharT, N1 + N2> operator+(
-    const basic_constexpr_string<CharT, N1>& cstr1,
-    const basic_constexpr_string<CharT, N2>& cstr2) {
+constexpr basic_constexpr_string<CharT, N1 + N2>
+operator+(const basic_constexpr_string<CharT, N1> &cstr1,
+          const basic_constexpr_string<CharT, N2> &cstr2) {
   return detail::concat(cstr1.buffer, make_index_sequence<N1>(), cstr2.buffer,
                         make_index_sequence<N2>());
 }
 template <typename CharT, std::size_t N>
-std::basic_string<CharT> operator+(
-    const std::basic_string<CharT>& str,
-    const basic_constexpr_string<CharT, N>& cstr) {
+std::basic_string<CharT>
+operator+(const std::basic_string<CharT> &str,
+          const basic_constexpr_string<CharT, N> &cstr) {
   std::string ret;
   ret.reserve(str.size() + N);
   ret.append(str);
@@ -141,8 +139,8 @@ std::basic_string<CharT> operator+(
   return ret;
 }
 template <typename CharT, std::size_t N>
-std::basic_string<CharT> operator+(const basic_constexpr_string<CharT, N>& cstr,
-                                   const std::basic_string<CharT>& str) {
+std::basic_string<CharT> operator+(const basic_constexpr_string<CharT, N> &cstr,
+                                   const std::basic_string<CharT> &str) {
   std::string ret;
   ret.reserve(str.size() + N);
   ret.append(cstr.buffer);
@@ -151,8 +149,8 @@ std::basic_string<CharT> operator+(const basic_constexpr_string<CharT, N>& cstr,
 }
 
 template <typename CharT, std::size_t N>
-constexpr basic_constexpr_string<CharT, N - 1> to_constexpr_string(
-    const CharT (&str)[N]) {
+constexpr basic_constexpr_string<CharT, N - 1>
+to_constexpr_string(const CharT (&str)[N]) {
   return detail::build_string(str, make_index_sequence<N - 1>());
 }
 
@@ -161,14 +159,14 @@ using constexpr_string = basic_constexpr_string<char, N>;
 template <std::size_t N>
 using constexpr_wstring = basic_constexpr_string<wchar_t, N>;
 
-#if defined(_HAS_CONSTEXPR) || __cplusplus >= 201103L || \
+#if defined(_HAS_CONSTEXPR) || __cplusplus >= 201103L ||                       \
     (defined(_MSC_VER) && _MSC_VER >= 1800)
 template <std::size_t N>
 using constexpr_u16string = basic_constexpr_string<char16_t, N>;
 template <std::size_t N>
 using constexpr_u32string = basic_constexpr_string<char32_t, N>;
 #endif
-}
+} // namespace compiletime
 #else
 #error Needs at least a C++11 compiler
 #endif
